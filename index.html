@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Criptografia</title>
+</head>
+<body>
+    <h1>Criptografar Mensagem</h1>
+    <textarea id="message" placeholder="Digite sua mensagem"></textarea>
+    <br>
+
+    <label for="keySelect">Escolha uma chave:</label>
+    <select id="keySelect">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+    </select>
+
+    <br>
+    <button onclick="encryptMessage()">Criptografar</button>
+
+    <h2>Resultado da Criptografia</h2>
+    <p><strong>Mensagem Criptografada:</strong> <span id="encryptedData"></span></p>
+
+    <h1>Descriptografar Mensagem</h1>
+    <input type="text" id="decryptEncryptedData" placeholder="Digite a mensagem criptografada">
+    
+    <label for="decryptKeySelect">Escolha a chave:</label>
+    <select id="decryptKeySelect">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+    </select>
+
+    <br>
+    <button onclick="decryptMessage()">Descriptografar</button>
+
+    <h2>Mensagem Descriptografada</h2>
+    <p id="decryptedMessage"></p>
+
+    <script>
+        const API_KEY = 'abcdefg123456789'; // Use a mesma chave definida no servidor
+        const apiUrl = 'https://2456e4ff-41d3-42bd-933c-a5ef28ad3315-00-yvad6r7jd1pu.kirk.replit.dev/'; // Substitua pelo URL da sua API
+
+        function encryptMessage() {
+            const message = document.getElementById('message').value;
+            const keyName = document.getElementById('keySelect').value;
+
+            fetch(`${apiUrl}encrypt`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': API_KEY,
+                },
+                body: JSON.stringify({ message, keyName }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('encryptedData').textContent = data.encryptedData;
+            })
+            .catch(error => console.error('Erro ao criptografar:', error));
+        }
+
+        function decryptMessage() {
+            const encryptedData = document.getElementById('decryptEncryptedData').value;
+            const keyName = document.getElementById('decryptKeySelect').value;
+
+            fetch(`${apiUrl}decrypt`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': API_KEY,
+                },
+                body: JSON.stringify({ encryptedData, keyName }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao descriptografar');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('decryptedMessage').textContent = data.decryptedMessage;
+            })
+            .catch(error => {
+                console.error('Erro ao descriptografar:', error);
+                alert('Falha na descriptografia: verifique a mensagem e a chave.');
+            });
+        }
+    </script>
+</body>
+</html>
